@@ -56,31 +56,62 @@ export function HomePage({ onGetStarted, onSignIn }: HomePagePropsExtended) {
                 <div className="hero-content">
                     <div className="hero-badge">
                         <span className="badge-dot"></span>
-                        Free & Open Source
+                        100% Free & Secure
                     </div>
                     <h1 className="hero-title">
-                        Where Privacy,<br />
-                        <span className="gradient-text">Meets Productivity</span>
+                        Your Ideas,<br />
+                        <span className="gradient-text">Perfectly Organized</span>
                     </h1>
 
                     <p className="hero-tagline">
-                        Your Private Space for Brilliant Ideas.
+                        Smart note-taking that respects your privacy
                     </p>
 
                     <p className="hero-description">
-                        A minimal, secure note-taking app that syncs with your Google Drive.
-                        Create folders, write notes, and access them from any device.
+                        Experience seamless note-taking with encrypted storage, Google Drive sync,
+                        and powerful organization tools. Write in Markdown, organize in folders,
+                        and access your notes from anywhere.
                     </p>
                     <div className="hero-actions">
                         <button className="hero-btn primary" onClick={onGetStarted}>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
-                            Get Started — It's Free
+                            Start Taking Notes Free
                         </button>
                         <a href="#features" onClick={scrollToFeatures} className="hero-btn secondary">
-                            Learn More
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                            Explore Features
                         </a>
+                    </div>
+                    <div className="hero-stats">
+                        <div className="stat-item">
+                            <div className="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <span>End-to-End Encrypted</span>
+                        </div>
+                        <div className="stat-item">
+                            <div className="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
+                                </svg>
+                            </div>
+                            <span>Real-time Sync</span>
+                        </div>
+                        <div className="stat-item">
+                            <div className="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                </svg>
+                            </div>
+                            <span>Offline Support</span>
+                        </div>
                     </div>
                 </div>
                 <div className="hero-visual">
@@ -98,12 +129,14 @@ export function HomePage({ onGetStarted, onSignIn }: HomePagePropsExtended) {
                                 <div className="preview-folder"></div>
                                 <div className="preview-file active"></div>
                                 <div className="preview-file"></div>
+                                <div className="preview-file"></div>
                             </div>
                             <div className="preview-editor">
                                 <div className="preview-line long"></div>
                                 <div className="preview-line medium"></div>
                                 <div className="preview-line short"></div>
                                 <div className="preview-line long"></div>
+                                <div className="preview-line medium"></div>
                             </div>
                         </div>
                     </div>
@@ -113,76 +146,109 @@ export function HomePage({ onGetStarted, onSignIn }: HomePagePropsExtended) {
             {/* Features Section */}
             <section className="features" id="features">
                 <div className="features-header">
-                    <h2>Everything You Need</h2>
-                    <p>Powerful features designed for your productivity and privacy</p>
+                    <h2>Powerful Features for Modern Note-Taking</h2>
+                    <p>Everything you need to capture, organize, and find your ideas effortlessly</p>
                 </div>
                 <div className="features-grid">
                     <div className="feature-card">
-                        <div className="feature-icon-wrapper">
+                        <div className="feature-icon-wrapper blue">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                                 <path d="M7 11V7a5 5 0 0110 0v4" />
                             </svg>
                         </div>
-                        <h3>Privacy First</h3>
-                        <p>Your notes are stored locally and encrypted. Optional Google Drive sync keeps your data under your control.</p>
+                        <h3>Military-Grade Encryption</h3>
+                        <p>Your notes are encrypted end-to-end with AES-256 encryption. Lock sensitive folders with password protection for extra security.</p>
                     </div>
 
                     <div className="feature-card">
-                        <div className="feature-icon-wrapper">
+                        <div className="feature-icon-wrapper green">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M23 21v-2a4 4 0 00-3-3.87" />
-                                <path d="M16 3.13a4 4 0 010 7.75" />
+                                <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 002-2v-4M17 8l-5-5-5 5M12 3v12" />
                             </svg>
                         </div>
-                        <h3>Google Drive Sync</h3>
-                        <p>Seamlessly sync your notes across all devices using your Google Drive account.</p>
+                        <h3>Cloud Sync with Google Drive</h3>
+                        <p>Automatically sync your notes across all devices using your Google Drive. Work offline and sync when you're back online.</p>
                     </div>
 
                     <div className="feature-card">
-                        <div className="feature-icon-wrapper">
+                        <div className="feature-icon-wrapper orange">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                                 <polyline points="14 2 14 8 20 8" />
-                                <line x1="12" y1="18" x2="12" y2="12" />
-                                <line x1="9" y1="15" x2="15" y2="15" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                                <polyline points="10 9 9 9 8 9" />
                             </svg>
                         </div>
-                        <h3>Markdown Support</h3>
-                        <p>Write in plain text with full Markdown support.  powerful and simple formatting.</p>
+                        <h3>Rich Markdown Editor</h3>
+                        <p>Write beautifully formatted notes with full Markdown support. Add headers, lists, code blocks, tables, and more with simple syntax.</p>
                     </div>
 
                     <div className="feature-card">
-                        <div className="feature-icon-wrapper">
+                        <div className="feature-icon-wrapper teal">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                                <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
                             </svg>
                         </div>
-                        <h3>Organize with Folders</h3>
-                        <p>Keep your notes organized with folders and subfolders. Lock sensitive folders with encryption.</p>
+                        <h3>Smart Folder Organization</h3>
+                        <p>Create unlimited folders and subfolders to organize your notes. Drag and drop files between folders with ease.</p>
                     </div>
 
                     <div className="feature-card">
-                        <div className="feature-icon-wrapper">
+                        <div className="feature-icon-wrapper red">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <circle cx="11" cy="11" r="8" />
                                 <path d="M21 21l-4.35-4.35" />
                             </svg>
                         </div>
-                        <h3>Powerful Search</h3>
-                        <p>Find your notes instantly with powerful real-time search across all your content.</p>
+                        <h3>Lightning-Fast Search</h3>
+                        <p>Find any note instantly with powerful full-text search. Search by title, content, or tags across all your notes.</p>
                     </div>
 
                     <div className="feature-card">
-                        <div className="feature-icon-wrapper">
+                        <div className="feature-icon-wrapper purple">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                <path d="M2 17l10 5 10-5" />
+                                <path d="M2 12l10 5 10-5" />
                             </svg>
                         </div>
-                        <h3>Free & Open Source</h3>
-                        <p>Completely free to use, forever. Open source code you can trust and contribute to.</p>
+                        <h3>Export & Share</h3>
+                        <p>Export notes to PDF, Markdown, or plain text. Share your notes securely or keep them private.</p>
+                    </div>
+
+                    <div className="feature-card">
+                        <div className="feature-icon-wrapper indigo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                <path d="M9 3v18" />
+                            </svg>
+                        </div>
+                        <h3>Dual View Mode</h3>
+                        <p>Toggle between editor and preview modes, or use split view to see your formatted notes while you write.</p>
+                    </div>
+
+                    <div className="feature-card">
+                        <div className="feature-icon-wrapper yellow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
+                                <line x1="7" y1="7" x2="7.01" y2="7" />
+                            </svg>
+                        </div>
+                        <h3>Tags & Categories</h3>
+                        <p>Organize notes with custom tags and categories. Filter and group your content for quick access to related notes.</p>
+                    </div>
+
+                    <div className="feature-card">
+                        <div className="feature-icon-wrapper gray">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
+                            </svg>
+                        </div>
+                        <h3>Dark & Light Themes</h3>
+                        <p>Switch between beautiful dark and light themes to match your preference or reduce eye strain.</p>
                     </div>
                 </div>
             </section>
