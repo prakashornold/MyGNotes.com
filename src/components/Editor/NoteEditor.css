@@ -1298,6 +1298,19 @@
     animation: fadeIn 0.3s ease-out;
 }
 
+/* Ensure editor container takes full space in fullscreen */
+.note-editor.fullscreen-mode .editor-container,
+.note-editor.distraction-free .editor-container {
+    width: 100%;
+    height: 100%;
+}
+
+.note-editor.fullscreen-mode .editor-main,
+.note-editor.distraction-free .editor-main {
+    width: 100%;
+    height: 100%;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -1340,16 +1353,31 @@
     background: rgba(15, 15, 20, 0.9);
 }
 
-/* Centered content with proper padding */
+/* Fullscreen content layout - Split view */
+.note-editor.fullscreen-mode .editor-pane,
+.note-editor.distraction-free .editor-pane {
+    max-width: none;
+    width: 100%;
+}
+
 .note-editor.fullscreen-mode .editor-textarea,
+.note-editor.distraction-free .editor-textarea {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 40px 60px;
+    font-size: 0.9375rem;
+    line-height: 1.8;
+}
+
 .note-editor.fullscreen-mode .preview-pane,
 .note-editor.fullscreen-mode .view-pane,
-.note-editor.distraction-free .editor-textarea,
 .note-editor.distraction-free .preview-pane,
 .note-editor.distraction-free .view-pane {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 80px 60px;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 40px 60px;
     font-size: 0.9375rem;
     line-height: 1.8;
 }
@@ -1359,8 +1387,8 @@
 .note-editor.fullscreen-mode .view-content,
 .note-editor.distraction-free .preview-content,
 .note-editor.distraction-free .view-content {
-    max-width: 850px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     padding-bottom: 100px;
 }
 
@@ -1408,14 +1436,27 @@
     border-radius: 10px;
 }
 
+/* Mobile responsive for fullscreen */
 @media (max-width: 768px) {
     .note-editor.fullscreen-mode .editor-textarea,
+    .note-editor.distraction-free .editor-textarea {
+        padding: 24px 20px;
+        font-size: 0.875rem;
+    }
+
     .note-editor.fullscreen-mode .preview-pane,
     .note-editor.fullscreen-mode .view-pane,
-    .note-editor.distraction-free .editor-textarea,
     .note-editor.distraction-free .preview-pane,
     .note-editor.distraction-free .view-pane {
-        padding: 60px 24px;
+        padding: 24px 20px;
+        font-size: 0.875rem;
+    }
+
+    .note-editor.fullscreen-mode .preview-content,
+    .note-editor.fullscreen-mode .view-content,
+    .note-editor.distraction-free .preview-content,
+    .note-editor.distraction-free .view-content {
+        padding-bottom: 60px;
     }
 }
 
