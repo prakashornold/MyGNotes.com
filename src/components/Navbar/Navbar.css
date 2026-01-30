@@ -1,0 +1,343 @@
+/* Modern Streamlined Navbar - Matching Landing Page Header */
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 60px;
+    height: 70px;
+    background: rgba(24, 24, 27, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 20px;
+    z-index: 30;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 1px 0 0 rgba(139, 92, 246, 0.1);
+    transition: all var(--transition-normal);
+}
+
+/* Light theme navbar */
+[data-theme="light"] .navbar {
+    background: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.navbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.navbar:hover::after {
+    opacity: 1;
+}
+
+/* Navbar Sections */
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.navbar-brand svg {
+    width: 24px;
+    height: 24px;
+    color: var(--accent-primary);
+}
+
+/* Mobile Menu Toggle - Removed as Sidebar is deprecated */
+
+/* Search Bar - Matching Landing Page Style */
+.navbar-search {
+    flex: 1;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+[data-theme="light"] .navbar-search {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.navbar-search::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.navbar-search:focus-within::before {
+    opacity: 1;
+}
+
+.navbar-search:focus-within {
+    background: rgba(139, 92, 246, 0.08);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+[data-theme="light"] .navbar-search:focus-within {
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.navbar-search svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    transition: color var(--transition-fast);
+}
+
+.navbar-search:focus-within svg {
+    color: var(--accent-primary);
+}
+
+.navbar-search input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    outline: none;
+}
+
+.navbar-search input::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Action Buttons - Matching Landing Page Header */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+[data-theme="light"] .nav-btn {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(139, 92, 246, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.2);
+}
+
+[data-theme="light"] .nav-btn:hover:not(:disabled) {
+    background: rgba(139, 92, 246, 0.08);
+}
+
+.nav-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.nav-btn.primary {
+    background: var(--accent-gradient);
+    border: none;
+    color: white;
+    box-shadow: var(--shadow-sm), 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.nav-btn.primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+.nav-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Sign-In Button - Matching Landing Page Header */
+.signin-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="light"] .signin-btn {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.signin-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(139, 92, 246, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.2);
+}
+
+[data-theme="light"] .signin-btn:hover:not(:disabled) {
+    background: rgba(139, 92, 246, 0.08);
+}
+
+.signin-btn:active {
+    transform: translateY(0);
+}
+
+.google-icon {
+    flex-shrink: 0;
+}
+
+/* User Section */
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+    .navbar {
+        padding: 0 30px;
+    }
+
+    .navbar-search {
+        max-width: 300px;
+    }
+
+    .nav-btn span,
+    .signin-btn span {
+        display: none;
+    }
+
+    .nav-btn,
+    .signin-btn {
+        padding: 10px;
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 16px;
+        height: 64px;
+        gap: 12px;
+    }
+
+    .navbar-left {
+        gap: 12px;
+    }
+
+    .navbar-brand {
+        display: none;
+        /* Hide full text brand */
+    }
+
+    /* Keep search but make it flexible */
+    .navbar-search {
+        margin: 0;
+        padding: 8px 12px;
+        max-width: none;
+    }
+
+    /* Show actions but smaller */
+    .navbar-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .nav-btn {
+        padding: 8px;
+        /* Compact */
+        border-radius: 10px;
+    }
+
+    .nav-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .navbar-user {
+        gap: 8px;
+    }
+
+    .signin-btn {
+        padding: 8px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    .navbar-search {
+        display: none;
+        /* Consider hiding search or making it an icon-toggle later if requested */
+    }
+
+    .navbar::before {
+        /* Add search icon trigger area if needed, but for now app view needs content space */
+        content: none;
+    }
+
+    /* Specific override to show actions when search is hidden */
+    .navbar-actions {
+        flex: 1;
+        justify-content: center;
+    }
+}

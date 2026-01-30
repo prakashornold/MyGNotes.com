@@ -1,0 +1,32 @@
+.footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: 16px 24px;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.footer-text {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.footer-text strong {
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .footer {
+        padding: 12px 16px;
+    }
+
+    .footer-text {
+        font-size: 12px;
+    }
+}
