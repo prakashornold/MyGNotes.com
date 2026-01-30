@@ -407,7 +407,19 @@
 }
 
 .editor-main.with-preview .editor-pane {
-    border-right: 1px solid var(--border-light);
+    border-right: 1px solid rgba(139, 92, 246, 0.1);
+    position: relative;
+}
+
+.editor-main.with-preview .editor-pane::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.3) 50%, transparent);
+    opacity: 0.5;
 }
 
 /* On desktop, active class doesn't hide anything in split view, 
@@ -443,33 +455,43 @@
     min-width: 0;
 }
 
-/* Editor Textarea - Clean and Simple */
+/* Editor Textarea - Enhanced Writing Experience */
 .editor-textarea {
     flex: 1;
-    padding: 20px 24px;
+    padding: 32px 40px;
     background: var(--bg-primary);
     color: var(--text-primary);
     font-size: 0.9375rem;
-    line-height: 1.7;
+    line-height: 1.75;
     font-family: var(--font-mono);
     border: none;
     resize: none;
     outline: none;
     overflow-y: auto;
     tab-size: 4;
+    letter-spacing: 0.01em;
+    transition: all 0.3s ease;
 }
 
 .editor-textarea::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
+}
+
+.editor-textarea::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .editor-textarea::-webkit-scrollbar-thumb {
-    background: var(--bg-elevated);
-    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.2));
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
 }
 
 .editor-textarea::-webkit-scrollbar-thumb:hover {
-    background: var(--text-tertiary);
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.5), rgba(59, 130, 246, 0.4));
+    border: 2px solid transparent;
+    background-clip: padding-box;
 }
 
 .editor-textarea::placeholder {
@@ -477,36 +499,38 @@
     font-style: normal;
 }
 
-/* Preview/View Pane - Clean Markdown Rendering */
+/* Preview/View Pane - Enhanced Markdown Rendering */
 .preview-pane,
 .view-pane {
     flex: 1;
-    padding: 32px 24px;
+    padding: 48px 40px;
     overflow-y: auto;
-    background: var(--bg-primary);
+    background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.02), transparent 60%);
     position: relative;
+    animation: fadeIn 0.4s ease-out;
 }
 
 .preview-pane::-webkit-scrollbar,
 .view-pane::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 
 .preview-pane::-webkit-scrollbar-track,
 .view-pane::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba(139, 92, 246, 0.03);
 }
 
 .preview-pane::-webkit-scrollbar-thumb,
 .view-pane::-webkit-scrollbar-thumb {
-    background: var(--bg-elevated);
-    border-radius: 4px;
-    transition: background var(--transition-fast);
+    background: linear-gradient(180deg, #8B5CF6, #3B82F6);
+    border-radius: 10px;
+    transition: all 0.3s ease;
 }
 
 .preview-pane::-webkit-scrollbar-thumb:hover,
 .view-pane::-webkit-scrollbar-thumb:hover {
-    background: var(--text-tertiary);
+    background: linear-gradient(180deg, #9333ea, #2563eb);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
 }
 
 /* Enhanced Typography & Reading Experience */
@@ -1261,65 +1285,137 @@
     overflow: hidden;
 }
 
-/* Distraction-Free Mode */
+/* Fullscreen Mode - Enhanced Experience */
+.note-editor.fullscreen-mode,
 .note-editor.distraction-free {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1000;
+    z-index: 9999;
     background: var(--bg-primary);
+    animation: fadeIn 0.3s ease-out;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Floating header in fullscreen */
+.note-editor.fullscreen-mode .editor-header,
 .note-editor.distraction-free .editor-header {
-    background: transparent;
-    border-bottom: 1px solid transparent;
-    transition: all var(--transition-normal);
+    background: rgba(15, 15, 20, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    opacity: 0.7;
 }
 
+.note-editor.fullscreen-mode .editor-header:hover,
 .note-editor.distraction-free .editor-header:hover {
-    background: var(--glass-bg);
-    border-bottom-color: var(--glass-border);
-}
-
-.note-editor.distraction-free .formatting-toolbar {
-    opacity: 0.3;
-    transition: opacity var(--transition-normal);
-}
-
-.note-editor.distraction-free .formatting-toolbar:hover {
+    background: rgba(15, 15, 20, 0.9);
+    border-bottom-color: rgba(139, 92, 246, 0.2);
     opacity: 1;
 }
 
+/* Subtle formatting toolbar */
+.note-editor.fullscreen-mode .formatting-toolbar,
+.note-editor.distraction-free .formatting-toolbar {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    background: rgba(15, 15, 20, 0.5);
+    backdrop-filter: blur(20px);
+}
+
+.note-editor.fullscreen-mode .formatting-toolbar:hover,
+.note-editor.distraction-free .formatting-toolbar:hover {
+    opacity: 1;
+    background: rgba(15, 15, 20, 0.9);
+}
+
+/* Centered content with proper padding */
+.note-editor.fullscreen-mode .editor-textarea,
+.note-editor.fullscreen-mode .preview-pane,
+.note-editor.fullscreen-mode .view-pane,
 .note-editor.distraction-free .editor-textarea,
 .note-editor.distraction-free .preview-pane,
 .note-editor.distraction-free .view-pane {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 60px 40px;
+    padding: 80px 60px;
+    font-size: 0.9375rem;
+    line-height: 1.8;
 }
 
+/* Elevated preview content in fullscreen */
+.note-editor.fullscreen-mode .preview-content,
+.note-editor.fullscreen-mode .view-content,
+.note-editor.distraction-free .preview-content,
+.note-editor.distraction-free .view-content {
+    max-width: 850px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+}
+
+/* Enhanced status bar */
+.note-editor.fullscreen-mode .editor-status-bar,
 .note-editor.distraction-free .editor-status-bar {
-    opacity: 0.3;
-    transition: opacity var(--transition-normal);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    background: rgba(15, 15, 20, 0.5);
+    backdrop-filter: blur(20px);
 }
 
+.note-editor.fullscreen-mode .editor-status-bar:hover,
 .note-editor.distraction-free .editor-status-bar:hover {
     opacity: 1;
+    background: rgba(15, 15, 20, 0.9);
 }
 
-/* Hide TOC in distraction-free mode */
+/* Hide TOC in fullscreen mode */
+.note-editor.fullscreen-mode .toc-sidebar,
 .note-editor.distraction-free .toc-sidebar {
     display: none;
 }
 
-@media (max-width: 768px) {
+/* Active button state */
+.editor-action-btn.active {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.1));
+    border-color: rgba(139, 92, 246, 0.4);
+    color: var(--accent-primary);
+}
 
+/* Smooth scrollbar in fullscreen */
+.note-editor.fullscreen-mode .editor-textarea::-webkit-scrollbar,
+.note-editor.fullscreen-mode .preview-pane::-webkit-scrollbar,
+.note-editor.distraction-free .editor-textarea::-webkit-scrollbar,
+.note-editor.distraction-free .preview-pane::-webkit-scrollbar {
+    width: 8px;
+}
+
+.note-editor.fullscreen-mode .editor-textarea::-webkit-scrollbar-thumb,
+.note-editor.fullscreen-mode .preview-pane::-webkit-scrollbar-thumb,
+.note-editor.distraction-free .editor-textarea::-webkit-scrollbar-thumb,
+.note-editor.distraction-free .preview-pane::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8B5CF6, #3B82F6);
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .note-editor.fullscreen-mode .editor-textarea,
+    .note-editor.fullscreen-mode .preview-pane,
+    .note-editor.fullscreen-mode .view-pane,
     .note-editor.distraction-free .editor-textarea,
     .note-editor.distraction-free .preview-pane,
     .note-editor.distraction-free .view-pane {
-        padding: 40px 24px;
+        padding: 60px 24px;
     }
 }
 

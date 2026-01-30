@@ -81,8 +81,10 @@ export function NoteEditor({
     const [distractionFree, setDistractionFree] = useState<boolean>(false);
     const [showLineNumbers, setShowLineNumbers] = useState<boolean>(false);
     const [wordWrap, setWordWrap] = useState<boolean>(true);
+    const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const editorRef = useRef<HTMLDivElement>(null);
 
     // Export Functions
     const downloadFile = (content: string, filename: string, type: string) => {
@@ -207,10 +209,16 @@ ${localContent.split('\n').map(line => {
             // Distraction-free mode toggle (F11)
             if (e.key === 'F11') {
                 e.preventDefault();
-                setDistractionFree(!distractionFree);
+                toggleFullscreen();
             }
-            // Escape to go back
-            if (e.key === 'Escape' && onBack) onBack();
+            // Escape to exit fullscreen or go back
+            if (e.key === 'Escape') {
+                if (isFullscreen || distractionFree) {
+                    exitFullscreen();
+                } else if (onBack) {
+                    onBack();
+                }
+            }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
@@ -307,6 +315,51 @@ ${localContent.split('\n').map(line => {
     const formatHR = () => insertFormatting('\n---\n', '', '');
     const formatTable = () => insertFormatting('\n| Column 1 | Column 2 |\n|----------|----------|\n| ', ' |  |\n', 'Cell');
 
+    // Fullscreen functionality
+    const toggleFullscreen = async () => {
+        if (!editorRef.current) return;
+
+        try {
+            if (!document.fullscreenElement) {
+                await editorRef.current.requestFullscreen();
+                setIsFullscreen(true);
+                setDistractionFree(true);
+            } else {
+                await document.exitFullscreen();
+                setIsFullscreen(false);
+                setDistractionFree(false);
+            }
+        } catch (error) {
+            console.error('Error toggling fullscreen:', error);
+            setDistractionFree(!distractionFree);
+        }
+    };
+
+    const exitFullscreen = async () => {
+        try {
+            if (document.fullscreenElement) {
+                await document.exitFullscreen();
+            }
+            setIsFullscreen(false);
+            setDistractionFree(false);
+        } catch (error) {
+            console.error('Error exiting fullscreen:', error);
+            setDistractionFree(false);
+        }
+    };
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            if (!document.fullscreenElement) {
+                setIsFullscreen(false);
+                setDistractionFree(false);
+            }
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
     if (!file) return null;
 
     // Custom renderer to add IDs to headings
@@ -334,7 +387,7 @@ ${localContent.split('\n').map(line => {
     // ... existing hooks ...
 
     return (
-        <div className={`note-editor ${viewOnly ? 'view-only' : ''} ${viewOnly && headings.length > 0 ? 'with-toc' : ''} ${distractionFree ? 'distraction-free' : ''}`}>
+        <div ref={editorRef} className={`note-editor ${viewOnly ? 'view-only' : ''} ${viewOnly && headings.length > 0 ? 'with-toc' : ''} ${distractionFree ? 'distraction-free' : ''} ${isFullscreen ? 'fullscreen-mode' : ''}`}>
             <header className="editor-header">
                 <div className="editor-header-left">
                     <button className="back-btn" onClick={onBack}>
@@ -432,14 +485,14 @@ ${localContent.split('\n').map(line => {
                         </div>
                     )}
 
-                    {/* Distraction-Free Mode Toggle */}
+                    {/* Fullscreen Mode Toggle */}
                     <button
-                        className="editor-action-btn"
-                        onClick={() => setDistractionFree(!distractionFree)}
-                        title="Distraction-Free Mode (F11)"
+                        className={`editor-action-btn ${isFullscreen || distractionFree ? 'active' : ''}`}
+                        onClick={toggleFullscreen}
+                        title="Fullscreen Mode (F11)"
                     >
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-                            {distractionFree ? (
+                            {isFullscreen || distractionFree ? (
                                 <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
                             ) : (
                                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
