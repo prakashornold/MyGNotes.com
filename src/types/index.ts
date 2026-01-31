@@ -155,10 +155,10 @@ export interface NavbarProps {
     onSearch?: (query: string) => void;
     onNewFolder: () => void; // Maps to onNewFolder
     onNewFile: () => void;   // Maps to onNewFile
+    onDailyNote: () => void; // Maps to onDailyNote
     searchQuery?: string;
     onSignIn: () => void;
     onSignOut?: () => void;
-    onSearch?: (query: string) => void;
     isLoading?: boolean;
     isSyncing?: boolean;
     onMenuClick?: () => void;

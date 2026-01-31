@@ -194,6 +194,23 @@
     box-shadow: var(--shadow-md), var(--shadow-glow);
 }
 
+.nav-btn.daily-note-btn {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+    border-color: rgba(16, 185, 129, 0.3);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .nav-btn.daily-note-btn {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.08));
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.nav-btn.daily-note-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+    border-color: rgba(16, 185, 129, 0.5);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+}
+
 .nav-btn svg {
     width: 18px;
     height: 18px;
