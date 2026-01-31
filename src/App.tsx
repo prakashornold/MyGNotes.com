@@ -45,6 +45,7 @@ function AppContent() {
         moveItem,
         togglePin,
         syncToGoogleDrive,
+        createOrOpenDailyNote,
         hasLocalData,
     } = useGoogleDrive();
 
@@ -275,55 +276,19 @@ function AppContent() {
 
     const handleDailyNote = useCallback(async () => {
         try {
-            // Get today's date in YYYY-MM-DD format
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            const fileName = `${dateStr}.md`;
-
-            // Navigate to root if not already there
-            if (folderPath.length > 0) {
-                navigateToPath(-1);
-                // Wait a bit for navigation to complete
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-
-            // Check if "Daily Note" folder exists at root
-            let dailyNoteFolder = items.find(item => item.isFolder && item.name === 'Daily Note' && !item.parentId);
-
-            // If not, create it
-            if (!dailyNoteFolder) {
-                dailyNoteFolder = await createFolder('Daily Note');
-                // Wait for the folder to be created and items to update
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
-
-            // Navigate into Daily Note folder
-            navigateToFolder(dailyNoteFolder.id, dailyNoteFolder.name);
-            // Wait for navigation
-            await new Promise(resolve => setTimeout(resolve, 200));
-
-            // After navigation, check items in Daily Note folder
-            // We need to fetch items in this folder to check if today's note exists
-            const dailyNoteItems = items.filter(item => item.parentId === dailyNoteFolder.id);
-            let todayNote = dailyNoteItems.find(item => !item.isFolder && item.name === fileName);
-
-            // If note doesn't exist, create it
+            const todayNote = await createOrOpenDailyNote();
             if (!todayNote) {
-                todayNote = await createFile(fileName);
-                if (!todayNote) {
-                    console.error('Failed to create daily note');
-                    return;
-                }
+                console.error('Failed to create daily note');
+                return;
             }
 
-            // Load and open the note in editor
             await loadFileContent(todayNote.id, todayNote.parentId);
             setSelectedFile(todayNote);
             setViewOnly(false);
         } catch (err) {
             console.error('Failed to create/open daily note:', err);
         }
-    }, [items, folderPath, navigateToPath, navigateToFolder, createFolder, createFile, loadFileContent]);
+    }, [createOrOpenDailyNote, loadFileContent]);
 
     const handleRename = useCallback(async (itemId: string, newName: string) => {
         try { await renameItem(itemId, newName); } catch (err) { console.error(err); }

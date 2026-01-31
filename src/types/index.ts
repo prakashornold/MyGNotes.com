@@ -98,6 +98,7 @@ export interface UseGoogleDriveReturn {
     moveItem: (itemId: string, targetFolderId: string) => Promise<void>;
     togglePin: (itemId: string) => Promise<void>;
     syncToGoogleDrive: () => Promise<void>;
+    createOrOpenDailyNote: () => Promise<DriveItem | null>;
     hasLocalData: boolean;
 }
 

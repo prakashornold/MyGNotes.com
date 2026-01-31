@@ -351,6 +351,53 @@ export function useGoogleDrive(): UseGoogleDriveReturn {
         return folderPath.slice(1).map(p => p.name);
     }, [folderPath]);
 
+    /**
+     * Create or open daily note for today
+     * Creates "Daily Note" folder if it doesn't exist
+     * Creates a note with today's date as filename if it doesn't exist
+     * Returns the note file
+     */
+    const createOrOpenDailyNote = useCallback(async (): Promise<DriveItem | null> => {
+        try {
+            const service = getService();
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            const fileName = `${dateStr}.md`;
+
+            // Get root folder ID
+            const rootFolderId = await service.initializeAppFolder();
+
+            // List items at root to find or create Daily Note folder
+            const rootItems = await service.listItems(rootFolderId);
+            let dailyNoteFolder = rootItems.find(item => item.isFolder && item.name === 'Daily Note');
+
+            if (!dailyNoteFolder) {
+                // Create Daily Note folder at root
+                dailyNoteFolder = await service.createFolder('Daily Note', rootFolderId);
+            }
+
+            // List items in Daily Note folder
+            const dailyNoteItems = await service.listItems(dailyNoteFolder.id);
+            let todayNote = dailyNoteItems.find(item => !item.isFolder && item.name === fileName);
+
+            if (!todayNote) {
+                // Create today's note in Daily Note folder
+                todayNote = await service.createFile(fileName, '', dailyNoteFolder.id);
+            }
+
+            // Navigate to the Daily Note folder
+            setCurrentFolderId(dailyNoteFolder.id);
+            setFolderPath([{ id: rootFolderId, name: 'MyGNotes.com' }, { id: dailyNoteFolder.id, name: 'Daily Note' }]);
+            await loadItems(dailyNoteFolder.id);
+
+            return todayNote;
+        } catch (err) {
+            console.error('Failed to create/open daily note:', err);
+            setError('Failed to create daily note');
+            return null;
+        }
+    }, [getService, loadItems]);
+
     return {
         items,
         isLoading,
@@ -373,6 +420,7 @@ export function useGoogleDrive(): UseGoogleDriveReturn {
         moveItem,
         togglePin,
         syncToGoogleDrive,
+        createOrOpenDailyNote,
         hasLocalData: localStorageService.hasLocalData(),
     };
 }
