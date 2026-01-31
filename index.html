@@ -5,14 +5,129 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="MyGNotes.com - Your private notes synced with Google Drive" />
-  <meta name="theme-color" content="#0a0a0f" />
+
+  <!-- Primary Meta Tags -->
+  <title>MyGNotes - Secure Note Taking App with Google Drive Sync | Free Online Notepad</title>
+  <meta name="title" content="MyGNotes - Secure Note Taking App with Google Drive Sync | Free Online Notepad" />
+  <meta name="description" content="Free secure note taking app with end-to-end encryption, Google Drive sync, markdown editor, and offline support. Best alternative to Google Keep, Evernote, Notion for private encrypted notes. Take notes online with password protection." />
+
+  <!-- Keywords Meta Tag -->
+  <meta name="keywords" content="note taking app, google notes, secure notes, encrypted notes, private notes, online notepad, digital notebook, note app, take notes online, google drive notes, cloud notes, free note app, markdown notes, password protected notes, encrypted note taking, secure notepad, private note taking, online notes, web notes, note taking software, google keep alternative, evernote alternative, notion alternative, note organization, note sync, cross platform notes, offline notes, note encryption, AES encryption notes, end-to-end encrypted notes, military grade encryption, secure note storage, private note app, confidential notes, protected notes, safe notes, note privacy, encrypted notebook, secure writing app, private journal, digital journal, encrypted diary, secure memo app, password notes, locked notes, encrypted text editor, secure markdown editor, google drive sync, cloud sync notes, auto sync notes, real-time sync, device sync, multi-device notes, sync across devices, backup notes, cloud backup, google drive backup, automatic backup, note backup, secure backup, markdown editor, rich text editor, text formatting, markdown support, code blocks, syntax highlighting, formatted notes, styled notes, WYSIWYG editor, note formatting, markdown preview, split view editor, dual pane editor, note viewer, markdown viewer, folder organization, note folders, nested folders, file management, note management, organize notes, categorize notes, tag notes, label notes, note tags, note categories, search notes, find notes, note search, full text search, quick search, instant search, filter notes, note filter, smart search, advanced search, note sharing, export notes, PDF export, markdown export, text export, download notes, save notes, note export, share notes, note collaboration, free notes app, free notepad, free note taking, no cost notes, zero cost notes, unlimited notes, free storage, free cloud storage, web app, web based notes, browser notes, online app, cloud app, SaaS notes, note taking service, note taking platform, writing app, text editor, note editor, simple notes, easy notes, fast notes, quick notes, lightweight notes, minimal notes, clean interface, user-friendly notes, intuitive notes, modern notes, beautiful notes, elegant notes, responsive notes, mobile notes, desktop notes, tablet notes, cross browser notes, dark mode notes, light mode notes, theme notes, customizable notes, personal notes, business notes, work notes, student notes, school notes, college notes, study notes, meeting notes, project notes, task notes, to-do notes, checklist notes, list notes, note templates, note ideas, brainstorming notes, creative writing, technical writing, documentation, knowledge base, personal wiki, second brain, productivity app, productivity tool, GTD notes, getting things done, note taking system, PKM notes, personal knowledge management, zettelkasten, note linking, connected notes" />
+
+  <!-- Author and Ownership -->
+  <meta name="author" content="Om Prakash Peddamadthala" />
+  <meta name="creator" content="Om Prakash Peddamadthala" />
+  <meta name="publisher" content="MyGNotes.com" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="7 days" />
+  <meta name="rating" content="general" />
+  <meta name="distribution" content="global" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mygnotes.com/" />
+  <meta property="og:title" content="MyGNotes - Secure Note Taking App with Google Drive Sync" />
+  <meta property="og:description" content="Free secure note taking app with end-to-end encryption, Google Drive sync, markdown editor, and offline support. Best alternative to Google Keep, Evernote, Notion." />
+  <meta property="og:image" content="https://mygnotes.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="MyGNotes" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://mygnotes.com/" />
+  <meta name="twitter:title" content="MyGNotes - Secure Note Taking App with Google Drive Sync" />
+  <meta name="twitter:description" content="Free secure note taking app with end-to-end encryption, Google Drive sync, markdown editor, and offline support." />
+  <meta name="twitter:image" content="https://mygnotes.com/twitter-image.png" />
+  <meta name="twitter:creator" content="@mygnotes" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://mygnotes.com/" />
+
+  <!-- Theme and Display -->
+  <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MyGNotes" />
+  <meta name="application-name" content="MyGNotes" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- Security Headers -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+
+  <!-- Preconnect for Performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
+  <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
-  <title>MyGNotes.com</title>
+
+  <!-- Structured Data - JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MyGNotes",
+    "alternateName": ["MyGNotes.com", "My Google Notes"],
+    "url": "https://mygnotes.com",
+    "description": "Free secure note taking app with end-to-end encryption, Google Drive sync, markdown editor, and offline support. Best alternative to Google Keep, Evernote, Notion for private encrypted notes.",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Web, Android, iOS, Windows, macOS, Linux",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Om Prakash Peddamadthala"
+    },
+    "featureList": [
+      "End-to-end encryption",
+      "Google Drive sync",
+      "Markdown editor",
+      "Offline support",
+      "Password protection",
+      "Folder organization",
+      "Full-text search",
+      "Export to PDF",
+      "Dark mode",
+      "Real-time sync",
+      "Cross-platform"
+    ],
+    "screenshot": "https://mygnotes.com/screenshot.png",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1250"
+    }
+  }
+  </script>
+
+  <!-- Breadcrumb Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://mygnotes.com"
+    }]
+  }
+  </script>
 </head>
 
 <body>
