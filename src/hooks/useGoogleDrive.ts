@@ -99,6 +99,15 @@ export function useGoogleDrive(): UseGoogleDriveReturn {
     }, [folderPath, loadItems]);
 
     const navigateToPath = useCallback(async (index: number) => {
+        // Handle -1 as navigation to root
+        if (index === -1 || index === 0) {
+            const rootFolder = folderPath[0];
+            setFolderPath([rootFolder]);
+            setCurrentFolderId(rootFolder.id);
+            await loadItems(rootFolder.id);
+            return;
+        }
+
         if (index >= folderPath.length - 1) return;
         const newPath = folderPath.slice(0, index + 1);
         const targetFolder = newPath[newPath.length - 1];

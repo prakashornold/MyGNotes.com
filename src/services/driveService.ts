@@ -176,7 +176,8 @@ class DriveService implements StorageService {
         const fileName = /\.(txt|md)$/.test(name) ? name : `${name}.txt`;
 
         let finalContent = content;
-        if (cryptoService.isLockedFolder(folderId)) {
+        // Encrypt if folder is locked AND has been unlocked (has key)
+        if (cryptoService.canEncryptFolder(folderId)) {
             const folderKey = cryptoService.getFolderKey(folderId);
             if (folderKey && content) {
                 finalContent = await cryptoService.encryptWithKey(content, folderKey);
@@ -210,13 +211,14 @@ class DriveService implements StorageService {
 
         let content = await response.text();
 
+        // Decrypt if folder is locked, file is encrypted, AND folder has been unlocked
         if (parentId && cryptoService.isLockedFolder(parentId)) {
             const folderKey = cryptoService.getFolderKey(parentId);
             if (folderKey && cryptoService.isEncrypted(content)) {
                 try {
                     content = await cryptoService.decryptWithKey(content, folderKey);
                 } catch {
-                    // Decryption failed
+                    // Decryption failed - folder may not be unlocked
                 }
             }
         }
@@ -226,7 +228,8 @@ class DriveService implements StorageService {
 
     async updateFileContent(fileId: string, content: string, parentId: string | null = null): Promise<void> {
         let finalContent = content;
-        if (parentId && cryptoService.isLockedFolder(parentId)) {
+        // Encrypt if folder is locked AND has been unlocked (has key)
+        if (parentId && cryptoService.canEncryptFolder(parentId)) {
             const folderKey = cryptoService.getFolderKey(parentId);
             if (folderKey && content) {
                 finalContent = await cryptoService.encryptWithKey(content, folderKey);

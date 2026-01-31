@@ -142,7 +142,8 @@ class LocalStorageService implements StorageService {
         const fileName = /\.(txt|md)$/.test(name) ? name : `${name}.txt`;
 
         let finalContent = content;
-        if (cryptoService.isLockedFolder(folderId)) {
+        // Encrypt if folder is locked AND has been unlocked (has key)
+        if (cryptoService.canEncryptFolder(folderId)) {
             const folderKey = cryptoService.getFolderKey(folderId);
             if (folderKey && content) {
                 finalContent = await cryptoService.encryptWithKey(content, folderKey);
@@ -177,6 +178,7 @@ class LocalStorageService implements StorageService {
 
         const folderId = parentId || file?.parentId;
 
+        // Decrypt if folder is locked, file is encrypted, AND folder has been unlocked
         if (folderId && cryptoService.isLockedFolder(folderId)) {
             const folderKey = cryptoService.getFolderKey(folderId);
             if (folderKey && cryptoService.isEncrypted(content)) {
@@ -197,7 +199,8 @@ class LocalStorageService implements StorageService {
             const folderId = parentId || file.parentId;
 
             let finalContent = content;
-            if (folderId && cryptoService.isLockedFolder(folderId)) {
+            // Encrypt if folder is locked AND has been unlocked (has key)
+            if (folderId && cryptoService.canEncryptFolder(folderId)) {
                 const folderKey = cryptoService.getFolderKey(folderId);
                 if (folderKey && content) {
                     finalContent = await cryptoService.encryptWithKey(content, folderKey);

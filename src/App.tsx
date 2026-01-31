@@ -180,8 +180,32 @@ function AppContent() {
 
         try {
             if (folderToLock) {
-                // Lock the folder
+                // Lock the folder and derive key
                 await cryptoService.lockFolder(folderToLock.id, password);
+
+                // Get all files in this folder (non-recursive)
+                const filesInFolder = items.filter(
+                    item => !item.isFolder && item.parentId === folderToLock.id
+                );
+
+                // Encrypt all existing files
+                if (filesInFolder.length > 0) {
+                    for (const file of filesInFolder) {
+                        try {
+                            // Read the current content
+                            const content = await getFileContent(file.id, file.parentId);
+
+                            // Only encrypt if not already encrypted
+                            if (!cryptoService.isEncrypted(content)) {
+                                // Re-save (will auto-encrypt using canEncryptFolder)
+                                await updateFileContent(file.id, content, file.parentId);
+                            }
+                        } catch (err) {
+                            console.error(`Failed to encrypt file ${file.name}:`, err);
+                        }
+                    }
+                }
+
                 setFolderToLock(null);
             } else if (folderToUnlock) {
                 // Unlock to enter folder

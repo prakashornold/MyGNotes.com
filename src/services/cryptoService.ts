@@ -113,6 +113,22 @@ class CryptoService {
         return this.folderKeys[folderId] || null;
     }
 
+    /**
+     * Check if folder should have encrypted files
+     * Returns true if folder is locked (regardless of unlock state)
+     */
+    shouldEncryptFolder(folderId: string): boolean {
+        return this.isLockedFolder(folderId);
+    }
+
+    /**
+     * Check if we can encrypt files for this folder
+     * Returns true if folder is locked AND has been unlocked in this session
+     */
+    canEncryptFolder(folderId: string): boolean {
+        return this.isLockedFolder(folderId) && this.isFolderUnlocked(folderId);
+    }
+
     removeFolderLock(folderId: string): void {
         const lockedFolders = this.getLockedFolders();
         delete lockedFolders[folderId];
