@@ -11,6 +11,7 @@ interface DriveFileResponse {
     parents?: string[];
     appProperties?: {
         isPinned?: string;
+        isEncrypted?: string;
     };
 }
 
@@ -143,6 +144,7 @@ class DriveService implements StorageService {
             modifiedTime: file.modifiedTime,
             size: file.size,
             isPinned: file.appProperties?.isPinned === 'true',
+            isEncrypted: file.appProperties?.isEncrypted === 'true',
             parentId: file.parents?.[0] || null,
         }));
     }
@@ -175,20 +177,11 @@ class DriveService implements StorageService {
 
         const fileName = /\.(txt|md)$/.test(name) ? name : `${name}.txt`;
 
-        let finalContent = content;
-        // Encrypt if folder is locked AND has been unlocked (has key)
-        if (cryptoService.canEncryptFolder(folderId)) {
-            const folderKey = cryptoService.getFolderKey(folderId);
-            if (folderKey && content) {
-                finalContent = await cryptoService.encryptWithKey(content, folderKey);
-            }
-        }
-
         const file = await this.uploadFile({
             name: fileName,
             mimeType: 'text/plain',
             parents: [folderId],
-        }, finalContent);
+        }, content);
 
         return {
             id: file.id,
@@ -198,7 +191,7 @@ class DriveService implements StorageService {
         };
     }
 
-    async getFileContent(fileId: string, parentId: string | null = null): Promise<string> {
+    async getFileContent(fileId: string): Promise<string> {
         const response = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
             headers: {
                 'Authorization': `Bearer ${this.accessToken}`,
@@ -209,34 +202,23 @@ class DriveService implements StorageService {
             throw new Error('Failed to fetch file content');
         }
 
-        let content = await response.text();
+        const content = await response.text();
 
-        // Decrypt if folder is locked, file is encrypted, AND folder has been unlocked
-        if (parentId && cryptoService.isLockedFolder(parentId)) {
-            const folderKey = cryptoService.getFolderKey(parentId);
-            if (folderKey && cryptoService.isEncrypted(content)) {
-                try {
-                    content = await cryptoService.decryptWithKey(content, folderKey);
-                } catch {
-                    // Decryption failed - folder may not be unlocked
-                }
-            }
+        if (cryptoService.isItemEncrypted(fileId) && cryptoService.isEncrypted(content)) {
+            return await cryptoService.decryptData(content);
         }
 
         return content;
     }
 
-    async updateFileContent(fileId: string, content: string, parentId: string | null = null): Promise<void> {
+    async updateFileContent(fileId: string, content: string): Promise<void> {
         let finalContent = content;
-        // Encrypt if folder is locked AND has been unlocked (has key)
-        if (parentId && cryptoService.canEncryptFolder(parentId)) {
-            const folderKey = cryptoService.getFolderKey(parentId);
-            if (folderKey && content) {
-                finalContent = await cryptoService.encryptWithKey(content, folderKey);
-            }
+
+        if (cryptoService.isItemEncrypted(fileId)) {
+            finalContent = await cryptoService.encryptData(content);
         }
 
-        const response = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+        const response = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${this.accessToken}`,
@@ -246,8 +228,7 @@ class DriveService implements StorageService {
         });
 
         if (!response.ok) {
-            const error: DriveErrorResponse = await response.json();
-            throw new Error(error.error?.message || 'Update failed');
+            throw new Error('Failed to update file');
         }
     }
 
@@ -307,12 +288,19 @@ class DriveService implements StorageService {
     }
 
     async updateItemMetadata(itemId: string, metadata: ItemMetadata): Promise<void> {
-        const body: { appProperties?: { isPinned: string } } = {};
+        const appProperties: Record<string, string> = {};
 
         if (metadata.isPinned !== undefined) {
-            body.appProperties = {
-                isPinned: String(metadata.isPinned)
-            };
+            appProperties.isPinned = String(metadata.isPinned);
+        }
+
+        if (metadata.isEncrypted !== undefined) {
+            appProperties.isEncrypted = String(metadata.isEncrypted);
+        }
+
+        // Don't send empty appProperties
+        if (Object.keys(appProperties).length === 0) {
+            return;
         }
 
         const response = await fetch(`https://www.googleapis.com/drive/v3/files/${itemId}`, {
@@ -321,7 +309,7 @@ class DriveService implements StorageService {
                 'Authorization': `Bearer ${this.accessToken}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(body),
+            body: JSON.stringify({ appProperties }),
         });
 
         if (!response.ok) {

@@ -138,6 +138,54 @@
     color: var(--text-tertiary);
 }
 
+/* View Mode Toggle */
+.view-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+[data-theme="light"] .view-mode-toggle {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.view-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .view-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.view-btn.active {
+    background: var(--accent-gradient);
+    color: white;
+}
+
+.view-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
 /* Action Buttons - Matching Landing Page Header */
 .navbar-actions {
     display: flex;
@@ -295,16 +343,12 @@
     .navbar {
         padding: 0 16px;
         height: 64px;
-        gap: 12px;
+        gap: 8px;
+        /* Reduced gap to fit more */
     }
 
     .navbar-left {
-        gap: 12px;
-    }
-
-    .navbar-brand {
-        display: none;
-        /* Hide full text brand */
+        gap: 8px;
     }
 
     /* Keep search but make it flexible */
@@ -312,18 +356,41 @@
         margin: 0;
         padding: 8px 12px;
         max-width: none;
+        flex: 1;
+        /* Take available space */
     }
 
-    /* Show actions but smaller */
+    /* Show actions but optimize for mobile */
     .navbar-actions {
         display: flex;
         gap: 6px;
     }
 
+    /* View mode toggle - make buttons larger for touch */
+    .view-mode-toggle {
+        padding: 2px;
+        gap: 2px;
+    }
+
+    .view-btn {
+        padding: 10px;
+        /* Larger touch target */
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .view-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Action buttons - larger touch targets */
     .nav-btn {
-        padding: 8px;
-        /* Compact */
+        padding: 10px;
         border-radius: 10px;
+        min-width: 44px;
+        /* Accessibility standard */
+        min-height: 44px;
     }
 
     .nav-btn svg {
@@ -333,28 +400,50 @@
 
     .navbar-user {
         gap: 8px;
+        display: flex;
+        /* Ensure it's visible */
     }
 
     .signin-btn {
-        padding: 8px;
+        padding: 10px;
+        min-width: 44px;
+        min-height: 44px;
     }
 }
 
-/* Very small screens */
+/* Very small screens - Prioritize essential elements */
 @media (max-width: 480px) {
+    .navbar {
+        padding: 0 12px;
+        gap: 6px;
+    }
+
+    /* Hide search on very small screens to save space */
     .navbar-search {
         display: none;
-        /* Consider hiding search or making it an icon-toggle later if requested */
     }
 
-    .navbar::before {
-        /* Add search icon trigger area if needed, but for now app view needs content space */
-        content: none;
-    }
-
-    /* Specific override to show actions when search is hidden */
+    /* Optimize actions layout */
     .navbar-actions {
-        flex: 1;
-        justify-content: center;
+        gap: 4px;
+    }
+
+    /* Smaller buttons but still touch-friendly */
+    .view-btn {
+        padding: 8px;
+        min-width: 36px;
+        min-height: 36px;
+    }
+
+    .nav-btn {
+        padding: 8px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    /* Keep user profile visible */
+    .navbar-user {
+        display: flex;
+        gap: 6px;
     }
 }

@@ -354,28 +354,85 @@
 
 @media (max-width: 768px) {
     .formatting-toolbar {
-        padding: 8px 16px;
-        gap: 2px;
+        padding: 10px 16px;
+        gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        /* Smooth scrolling on iOS */
     }
 
     .toolbar-btn {
-        width: 32px;
-        height: 32px;
-        padding: 6px;
+        width: 40px;
+        /* Larger touch target */
+        height: 40px;
+        padding: 8px;
+        min-width: 40px;
+        min-height: 40px;
     }
 
     .toolbar-btn svg {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
     }
 
     .toolbar-divider {
-        margin: 0 4px;
+        margin: 0 6px;
     }
 
     .toolbar-btn::after {
         display: none;
         /* Hide tooltips on mobile */
+    }
+
+    /* Mobile header improvements */
+    .editor-header {
+        padding: 0 16px;
+        height: 64px;
+        /* Taller for easier touch */
+    }
+
+    .back-btn {
+        padding: 10px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .back-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Larger action buttons */
+    .editor-action-btn {
+        padding: 10px 14px;
+        min-height: 44px;
+        font-size: 0.875rem;
+    }
+
+    .editor-action-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Improve textarea for mobile */
+    .editor-textarea {
+        padding: 20px 16px;
+        font-size: 16px;
+        /* Prevent iOS zoom */
+        line-height: 1.6;
+    }
+
+    /* Preview/view pane padding */
+    .preview-pane,
+    .view-pane {
+        padding: 24px 16px;
+    }
+
+    .preview-content,
+    .view-content {
+        padding-bottom: 60px;
+        font-size: 0.9375rem;
+        /* Slightly larger on mobile */
     }
 }
 
@@ -1315,6 +1372,7 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -1438,6 +1496,7 @@
 
 /* Mobile responsive for fullscreen */
 @media (max-width: 768px) {
+
     .note-editor.fullscreen-mode .editor-textarea,
     .note-editor.distraction-free .editor-textarea {
         padding: 24px 20px;

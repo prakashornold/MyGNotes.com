@@ -17,6 +17,8 @@ export function Navbar({
     onSignIn,
     onSignOut,
     onSearch,
+    viewMode = 'grid',
+    onViewModeChange,
     isLoading,
     isSyncing,
     onLogoClick,
@@ -50,6 +52,38 @@ export function Navbar({
             </div>
 
             <div className="navbar-actions">
+                {/* View Mode Toggle */}
+                {onViewModeChange && (
+                    <div className="view-mode-toggle">
+                        <button
+                            className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                            onClick={onViewModeChange}
+                            title="Grid View"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                                <rect x="3" y="3" width="7" height="7" />
+                                <rect x="14" y="3" width="7" height="7" />
+                                <rect x="14" y="14" width="7" height="7" />
+                                <rect x="3" y="14" width="7" height="7" />
+                            </svg>
+                        </button>
+                        <button
+                            className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                            onClick={onViewModeChange}
+                            title="List View"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
+
                 <button className="nav-btn" onClick={onNewFolder} disabled={isLoading || isSyncing}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

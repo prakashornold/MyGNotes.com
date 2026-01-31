@@ -77,6 +77,12 @@
   --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
   --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Mobile Touch Optimization */
+  --touch-target-min: 44px;
+  --mobile-padding: 16px;
+  --mobile-gap: 12px;
+  --mobile-border-radius: 12px;
 }
 
 /* Light Theme overrides - Bright & Clean */
@@ -143,6 +149,8 @@ html {
   height: 100%;
   font-size: 17px;
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Smooth scrolling for mobile */
 }
 
 body {
@@ -157,6 +165,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
+
+  /* Mobile touch optimization */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
 }
 
 #root {
@@ -453,5 +466,53 @@ h6 {
 
   h3 {
     font-size: 1.5rem;
+  }
+}
+
+/* Mobile Touch Optimizations */
+@media (max-width: 768px) {
+
+  /* Ensure interactive elements are touch-friendly */
+  button,
+  a,
+  .clickable {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+  }
+
+  /* Prevent text selection on tap */
+  button,
+  .btn-primary,
+  .btn-secondary {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Optimize input fields for mobile */
+  input,
+  textarea {
+    font-size: 16px;
+    /* Prevent zoom on iOS */
+  }
+
+  /* Better spacing for mobile */
+  .card-glass {
+    padding: var(--mobile-padding);
+    border-radius: var(--mobile-border-radius);
+  }
+
+  /* Mobile button sizing */
+  .btn-primary,
+  .btn-secondary {
+    padding: 14px 20px;
+    font-size: 1rem;
+    min-height: var(--touch-target-min);
+  }
+}
+
+/* Prevent pull-to-refresh on mobile where not desired */
+@media (max-width: 768px) {
+  body {
+    overscroll-behavior-y: contain;
   }
 }

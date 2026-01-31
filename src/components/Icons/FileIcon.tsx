@@ -17,16 +17,16 @@ export const FileIcon: React.FC<FileIconProps> = ({ isFolder, name, id, isPinned
                     <path d="M19.5 21a2.5 2.5 0 002.5-2.5v-10c0-1.38-1.12-2.5-2.5-2.5h-5.83l-1.33-2H4a2 2 0 00-2 2v12.5a2.5 2.5 0 002.5 2.5h15z" fill="#FCD34D" />
                     <path d="M2.5 8h19c.83 0 1.5.67 1.5 1.5v9c0 1.38-1.12 2.5-2.5 2.5H4a2.5 2.5 0 01-2.5-2.5V9.5c0-.83.67-1.5 1.5-1.5z" fill="#F59E0B" />
                 </svg>
-                {cryptoService.isLockedFolder(id) && (
+                {cryptoService.isItemEncrypted(id) && (
                     <div className="lock-badge">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="12" height="12" style={{ color: '#ef4444' }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="12" height="12" style={{ color: '#10b981' }}>
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                             <path d="M7 11V7a5 5 0 0110 0v4" />
                         </svg>
                     </div>
                 )}
                 {isPinned && (
-                    <div className={`pin-badge ${cryptoService.isLockedFolder(id) ? 'offset' : ''}`}>
+                    <div className={`pin-badge ${cryptoService.isItemEncrypted(id) ? 'offset' : ''}`}>
                         <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12" style={{ color: '#3b82f6' }}>
                             <path d="M16 12V6a4 4 0 00-8 0v6l-2 2v1h5v6h2v-6h5v-1l-2-2z" />
                         </svg>

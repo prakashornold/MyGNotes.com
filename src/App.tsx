@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useGoogleDrive } from './hooks/useGoogleDrive';
@@ -7,22 +7,15 @@ import { Header } from './components/Layout/Header';
 import { Footer } from './components/Layout/Footer';
 import { HomePage } from './components/HomePage/HomePage';
 import { Navbar } from './components/Navbar/Navbar';
-// Sidebar removed per user request
 import { FileGrid } from './components/FileGrid/FileGrid';
 import { NoteEditor } from './components/Editor/NoteEditor';
 import { MarkdownViewer } from './components/Viewer/MarkdownViewer';
 import { isMarkdownFile } from './utils/fileUtils';
 import { CreateItemModal } from './components/Modal/Modal';
-import { PasswordModal } from './components/Modal/PasswordModal';
 import cryptoService from './services/cryptoService';
 import './App.css';
 import type { DriveItem } from './types';
 
-/**
- * Main Application - MyGNotes.com
- * - Logged in users: Show file grid directly
- * - Logged out users: Show home page
- */
 function AppContent() {
     const { user, isAuthenticated, isLoading: authLoading, signIn, signOut } = useAuth();
     const {
@@ -49,8 +42,6 @@ function AppContent() {
         hasLocalData,
     } = useGoogleDrive();
 
-    // React Router hooks for URL-based navigation
-    const location = useLocation();
     const navigate = useNavigate();
     const isNavigatingFromUrl = useRef(false);
 
@@ -62,26 +53,19 @@ function AppContent() {
     const [isSaving, setIsSaving] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState<'folder' | 'file' | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+        const savedMode = localStorage.getItem('viewMode') as 'grid' | 'list';
+        if (savedMode) return savedMode;
 
-    // Mobile detection for responsive layout
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+        // Default to list on mobile, grid on desktop
+        return window.innerWidth <= 768 ? 'list' : 'grid';
+    });
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-        window.addEventListener('resize', handleResize);
-        handleResize();
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    // Password modal state for folder locking
-    const [passwordError, setPasswordError] = useState('');
-    const [isUnlocking, setIsUnlocking] = useState(false);
-
-    // Folder locking state
-    const [folderToLock, setFolderToLock] = useState<DriveItem | null>(null);
-    const [folderToUnlock, setFolderToUnlock] = useState<DriveItem | null>(null);
+    const handleViewModeToggle = () => {
+        const newMode = viewMode === 'grid' ? 'list' : 'grid';
+        setViewMode(newMode);
+        localStorage.setItem('viewMode', newMode);
+    };
 
     // Sync local data when user logs in
     useEffect(() => {
@@ -90,14 +74,18 @@ function AppContent() {
         }
     }, [isAuthenticated]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Initialize crypto service on mount
+    useEffect(() => {
+        cryptoService.initializeMasterKey().catch(() => {
+            // Silently fail - encryption will be disabled
+        });
+    }, []);
+
     const loadFileContent = async (fileId: string, parentId: string | null = null) => {
         setIsLoadingFile(true);
         try {
             const content = await getFileContent(fileId, parentId);
             setFileContent(content);
-        } catch (err) {
-            console.error('Failed to load file:', err);
-            setFileContent('');
         } finally {
             setIsLoadingFile(false);
         }
@@ -107,7 +95,7 @@ function AppContent() {
         if (selectedFile && !selectedFile.isFolder) {
             loadFileContent(selectedFile.id, selectedFile.parentId);
         }
-    }, [selectedFile?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [selectedFile?.id]);
 
     // Navigate from URL on initial load and handle routing updates
     useEffect(() => {
@@ -143,7 +131,7 @@ function AppContent() {
                 });
             }
         }
-    }, [isInitialized, location.pathname]); // Listen to location changes (Back button)
+    }, [isInitialized, location.pathname]);
 
     // Update URL when folder path or selected file changes
     useEffect(() => {
@@ -169,82 +157,42 @@ function AppContent() {
         }
     }, [folderPath, selectedFile, isInitialized, getPathNames, navigate, location.pathname]);
 
-    const handleLockFolder = (folderId: string) => {
-        const folder = items.find(i => i.id === folderId);
-        if (folder) setFolderToLock(folder);
-    };
+    const handleToggleEncryption = async (itemId: string, isFolder: boolean) => {
+        const currentState = cryptoService.isItemEncrypted(itemId);
+        cryptoService.toggleItemEncryption(itemId, !currentState);
 
-    const handleFolderPasswordSubmit = async (password: string) => {
-        setPasswordError('');
-        setIsUnlocking(true);
+        // Handle file encryption/decryption
+        if (!isFolder) {
+            const file = items.find(i => i.id === itemId);
+            if (file) {
+                try {
+                    const content = await getFileContent(itemId, file.parentId);
 
-        try {
-            if (folderToLock) {
-                // Lock the folder and derive key
-                await cryptoService.lockFolder(folderToLock.id, password);
-
-                // Get all files in this folder (non-recursive)
-                const filesInFolder = items.filter(
-                    item => !item.isFolder && item.parentId === folderToLock.id
-                );
-
-                // Encrypt all existing files
-                if (filesInFolder.length > 0) {
-                    for (const file of filesInFolder) {
-                        try {
-                            // Read the current content
-                            const content = await getFileContent(file.id, file.parentId);
-
-                            // Only encrypt if not already encrypted
-                            if (!cryptoService.isEncrypted(content)) {
-                                // Re-save (will auto-encrypt using canEncryptFolder)
-                                await updateFileContent(file.id, content, file.parentId);
-                            }
-                        } catch (err) {
-                            console.error(`Failed to encrypt file ${file.name}:`, err);
+                    if (!currentState) {
+                        // Enabling encryption - encrypt if not already encrypted
+                        if (content && !cryptoService.isEncrypted(content)) {
+                            await updateFileContent(itemId, content, file.parentId);
+                        }
+                    } else {
+                        // Disabling encryption - decrypt and save as plain text
+                        if (content && cryptoService.isEncrypted(content)) {
+                            const decrypted = await cryptoService.decryptData(content);
+                            await updateFileContent(itemId, decrypted, file.parentId);
                         }
                     }
+                } catch (err) {
+                    // Silent fail
                 }
-
-                setFolderToLock(null);
-            } else if (folderToUnlock) {
-                // Unlock to enter folder
-                const success = await cryptoService.unlockFolder(folderToUnlock.id, password);
-                if (!success) {
-                    setPasswordError('Incorrect password');
-                    setIsUnlocking(false);
-                    return;
-                }
-                // Navigate into the folder
-                navigateToFolder(folderToUnlock.id, folderToUnlock.name);
-                setFolderToUnlock(null);
             }
-        } catch (err) {
-            console.error('Folder lock error:', err);
-            setPasswordError('Failed. Please try again.');
-        } finally {
-            setIsUnlocking(false);
         }
     };
 
-    const handleUnlockFolder = (folderId: string) => {
-        const folder = items.find(i => i.id === folderId);
-        if (!folder) return;
-        setFolderToUnlock(folder);
-    };
-
-    // Override folder navigation to check for locks
     const handleFolderDoubleClick = useCallback((item: DriveItem) => {
         if (item.isFolder) {
-            if (cryptoService.isLockedFolder(item.id) && !cryptoService.isFolderUnlocked(item.id)) {
-                // Need password to enter
-                setFolderToUnlock(item);
-            } else {
-                navigateToFolder(item.id, item.name);
-            }
+            navigateToFolder(item.id, item.name);
         } else {
             setSelectedFile(item);
-            setViewOnly(true); // Default to View Only on open
+            setViewOnly(true);
         }
     }, [navigateToFolder]);
 
@@ -279,7 +227,7 @@ function AppContent() {
     const handleNavigate = useCallback((index: number) => navigateToPath(index), [navigateToPath]);
 
     const handleCreateFolder = useCallback(async (name: string) => {
-        try { await createFolder(name); } catch (err) { console.error(err); }
+        try { await createFolder(name); } catch (err) { }
     }, [createFolder]);
 
     const handleCreateFile = useCallback(async (name: string) => {
@@ -293,7 +241,6 @@ function AppContent() {
             }
             return file;
         } catch (err) {
-            console.error(err);
             return null;
         }
     }, [createFile, loadFileContent]);
@@ -302,7 +249,6 @@ function AppContent() {
         try {
             const todayNote = await createOrOpenDailyNote();
             if (!todayNote) {
-                console.error('Failed to create daily note');
                 return;
             }
 
@@ -310,12 +256,11 @@ function AppContent() {
             setSelectedFile(todayNote);
             setViewOnly(false);
         } catch (err) {
-            console.error('Failed to create/open daily note:', err);
         }
     }, [createOrOpenDailyNote, loadFileContent]);
 
     const handleRename = useCallback(async (itemId: string, newName: string) => {
-        try { await renameItem(itemId, newName); } catch (err) { console.error(err); }
+        try { await renameItem(itemId, newName); } catch (err) { }
     }, [renameItem]);
 
     const handleDelete = useCallback(async (itemId: string) => {
@@ -325,7 +270,7 @@ function AppContent() {
                 setSelectedFile(null);
                 setFileContent('');
             }
-        } catch (err) { console.error(err); }
+        } catch (err) { }
     }, [deleteItem, selectedFile]);
 
 
@@ -337,7 +282,6 @@ function AppContent() {
         try {
             await updateFileContent(selectedFile.id, content, selectedFile.parentId);
         } catch (err) {
-            console.error(err);
             throw err;
         } finally {
             setIsSaving(false);
@@ -364,27 +308,7 @@ function AppContent() {
         );
     }
 
-    // Show folder lock password modal
-    if (folderToLock || folderToUnlock) {
-        const folder = folderToLock || folderToUnlock;
-        if (!folder) return null; // Should not happen
 
-        return (
-            <div className="page-wrapper">
-                <Header user={user} isAuthenticated={isAuthenticated} onSignIn={signIn} onSignOut={signOut} showNav={false} />
-                <PasswordModal
-                    isOpen={true}
-                    isSetup={!!folderToLock}
-                    folderName={folder.name}
-                    onSubmit={handleFolderPasswordSubmit}
-                    onSkip={() => { setFolderToLock(null); setFolderToUnlock(null); setPasswordError(''); }}
-                    error={passwordError}
-                    isLoading={isUnlocking}
-                />
-                <Footer />
-            </div>
-        );
-    }
 
     // Common App Component Logic
     const renderApp = (offline = false) => {
@@ -411,7 +335,9 @@ function AppContent() {
                         }}
                         onNewFolder={() => setShowCreateModal('folder')}
                         onNewFile={() => setShowCreateModal('file')}
-                        onDailyNote={handleDailyNote}
+                        viewMode={viewMode}
+                        onViewModeChange={handleViewModeToggle}
+                        onDailyNote={() => createOrOpenDailyNote()}
                         onSignIn={signIn}
                         onSignOut={signOut}
                         onSearch={setSearchQuery}
@@ -430,7 +356,7 @@ function AppContent() {
 
                     {/* Content */}
                     <main className="page-content app-view">
-                        {!isAuthenticated && !(folderToLock || folderToUnlock) && (
+                        {!isAuthenticated && (
                             <div className="offline-notification">
                                 <span>Working offline — Data saved locally. Sign in to sync with Google Drive.</span>
                             </div>
@@ -476,6 +402,7 @@ function AppContent() {
                                 items={items}
                                 searchQuery={searchQuery}
                                 isLoading={driveLoading}
+                                viewMode={viewMode}
                                 onItemClick={(item) => {
                                     handleItemClick(item);
                                     // For desktop, maybe just select? For now handleItemClick logic determines.
@@ -487,8 +414,7 @@ function AppContent() {
                                 onDelete={handleDelete}
                                 onMoveItem={moveItem}
                                 onTogglePin={togglePin}
-                                onLockFolder={handleLockFolder}
-                                onUnlockFolder={handleUnlockFolder}
+                                onToggleEncryption={handleToggleEncryption}
                             />
                         )}
                     </main>

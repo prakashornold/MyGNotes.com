@@ -11,6 +11,7 @@ export interface DriveItem {
     size?: string;
     isPinned?: boolean;
     parentId?: string | null;
+    isEncrypted?: boolean;
 }
 
 export interface FolderPath {
@@ -45,6 +46,7 @@ export interface StorageService {
 
 export interface ItemMetadata {
     isPinned?: boolean;
+    isEncrypted?: boolean;
 }
 
 // ============== Auth Types ==============
@@ -124,16 +126,16 @@ export interface FileGridProps {
     items: DriveItem[];
     searchQuery?: string;
     isLoading?: boolean;
+    viewMode?: 'grid' | 'list';
     onItemClick?: (item: DriveItem) => void;
     onItemDoubleClick?: (item: DriveItem) => void;
     onItemEdit?: (item: DriveItem) => void;
     onItemView?: (item: DriveItem) => void;
-    onRename?: (itemId: string, newName: string) => void;
-    onDelete?: (itemId: string) => void;
-    onMoveItem?: (itemId: string, targetFolderId: string) => void;
-    onLockFolder?: (folderId: string) => void;
-    onUnlockFolder?: (folderId: string) => void;
-    onTogglePin?: (itemId: string) => void;
+    onRename?: (id: string, newName: string) => void;
+    onDelete?: (id: string) => void;
+    onMoveItem?: (itemId: string, targetId: string) => void;
+    onToggleEncryption?: (itemId: string, isFolder: boolean) => void;
+    onTogglePin?: (id: string) => void;
 }
 
 export interface NoteEditorProps {
@@ -150,15 +152,17 @@ export interface NoteEditorProps {
 export interface NavbarProps {
     user: User | null;
     isAuthenticated: boolean;
-    breadcrumbs: FolderPath[]; // Maps to breadcrumbs prop in component
-    onNavigate: (index: number) => void;
+    breadcrumbs?: FolderPath[]; // Maps to breadcrumbs prop in component
+    onNavigate?: (index: number) => void;
     onNavigateUp?: () => void; // Optional in Navbar.jsx
     onSearch?: (query: string) => void;
-    onNewFolder: () => void; // Maps to onNewFolder
-    onNewFile: () => void;   // Maps to onNewFile
-    onDailyNote: () => void; // Maps to onDailyNote
+    viewMode?: 'grid' | 'list';
+    onViewModeChange?: () => void;
+    onNewFolder?: () => void; // Maps to onNewFolder
+    onNewFile?: () => void;   // Maps to onNewFile
+    onDailyNote?: () => void; // Maps to onDailyNote
     searchQuery?: string;
-    onSignIn: () => void;
+    onSignIn?: () => void;
     onSignOut?: () => void;
     isLoading?: boolean;
     isSyncing?: boolean;
@@ -180,15 +184,7 @@ export interface CreateItemModalProps {
     onSubmit: (name: string) => void;
 }
 
-export interface PasswordModalProps {
-    isOpen: boolean;
-    isSetup?: boolean;
-    folderName?: string;
-    onSubmit: (password: string) => void;
-    onSkip?: () => void;
-    error?: string;
-    isLoading?: boolean;
-}
+
 
 export interface HeaderProps {
     user: User | null;

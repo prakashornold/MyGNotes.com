@@ -61,8 +61,6 @@ export function MarkdownViewer({ file, content, onBack }: MarkdownViewerProps) {
         }
 
         setToc(tocItems);
-        console.log('📋 TOC Generated (' + tocItems.length + ' items):');
-        console.table(tocItems);
     }, [content]);
 
     // Scroll to section

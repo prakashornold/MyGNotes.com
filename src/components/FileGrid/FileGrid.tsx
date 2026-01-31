@@ -19,6 +19,7 @@ export function FileGrid({
     items = [],
     searchQuery = '',
     isLoading,
+    viewMode = 'grid',
     onItemClick,
     onItemDoubleClick,
     onItemEdit,
@@ -26,8 +27,7 @@ export function FileGrid({
     onRename,
     onDelete,
     onMoveItem,
-    onLockFolder,
-    onUnlockFolder,
+    onToggleEncryption,
     onTogglePin,
 }: FileGridProps) {
     const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
@@ -90,20 +90,9 @@ export function FileGrid({
         closeContextMenu();
     };
 
-    const handleLockClick = () => {
-        if (contextMenu?.item?.isFolder) {
-            onLockFolder?.(contextMenu.item.id);
-        }
-        closeContextMenu();
-    };
-
-    const handleUnlockClick = () => {
-        // Unlock logic typically handled by clicking the folder itself, but context menu option could exist
-        // The original code passed (item, true), implying 'remove lock'
-        // Since prop definition might differ, checking original intent:
-        // onUnlockFolder?.(contextMenu.item, true);
-        if (contextMenu?.item?.isFolder) {
-            onUnlockFolder?.(contextMenu.item.id);
+    const handleEncryptionToggleClick = () => {
+        if (contextMenu?.item) {
+            onToggleEncryption?.(contextMenu.item.id, contextMenu.item.isFolder);
         }
         closeContextMenu();
     };
@@ -151,7 +140,7 @@ export function FileGrid({
 
     return (
         <div className="grid-container" onClick={handleGridClick}>
-            <div className="file-grid">
+            <div className={`file-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
                 {filteredItems.map((item) => (
                     <div
                         key={item.id}
@@ -246,13 +235,12 @@ export function FileGrid({
                     )}
 
 
-                    {/* Lock option for unlocked folders only */}
-                    {contextMenu.item?.isFolder && !cryptoService.isLockedFolder(contextMenu.item.id) && (
-                        <button className="context-menu-item" onClick={handleLockClick}>
-                            <span style={{ fontSize: '14px' }}>🔒</span>
-                            Lock Folder
-                        </button>
-                    )}
+                    {/* Encryption toggle for both files and folders */}
+                    <div className="menu-divider" />
+                    <button className="context-menu-item" onClick={handleEncryptionToggleClick}>
+                        <span style={{ fontSize: '14px' }}>🔐</span>
+                        {cryptoService.isItemEncrypted(contextMenu.item.id) ? 'Disable Encryption' : 'Enable Encryption'}
+                    </button>
 
                     <button className="context-menu-item danger" onClick={handleDeleteClick}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
